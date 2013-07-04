@@ -1,0 +1,24 @@
+.monstergrid {
+    background-color: #AAA;
+    margin: 10px;
+    padding: 10px;
+}
+
+.monstergrid .row {
+    border: 2px solid red;
+    background-color: white;
+}
+
+.monstergrid td {
+    width: 50px;
+    height: 50px;
+    font-size: 32px;
+    text-align: center;
+}
+
+.monstergrid .row td.flask {
+    background-image: url("../../../plugins/games/images/flask-50x50.png");
+    background-repeat: no-repeat;
+    width: 50px;
+    height: 50px;
+}

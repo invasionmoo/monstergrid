@@ -11,147 +11,79 @@
 var dojoConfig = {
 	isDebug: true,
 	locale: "en-us",
-	//extraLocale: ['ja-jp'],
 	packages: [
-		{
-		  name: "plugins",
-		  location: "../../plugins"
-		}
+        {
+            name: "plugins",
+            location: "../../plugins"
+        }
 	],
 	debugAtAllCosts: true,
 	useCommentedJson: true
 };
-        
+
+console.log("HERE")
+
 </script>
 
 <script type="text/javascript"
 	src="dojo/dojo/dojo.js">
 </script>
 
-<script type="text/javascript">
-// janken
-
-console.log("janken");
-
-var choices1 = ["rock", "paper", "scissors"];
-var choices2 = ["rock", "paper", "scissors"];
-
-var choiceNumber = function (choice) {
-    if ( choice == "rock" ) return 1;
-    if ( choice == "paper" ) return 2;
-    if ( choice == "scissors" ) return 3;
-}
-
-var winner = function (choice1, choice2) {
-    var number1 = choiceNumber(choice1);
-    var number2 = choiceNumber(choice2);
-    
-    var result = (number1 % 3) - number2 - 1;
-    console.log("result: " + result);
-    
-    if ( result == 0 ) {
-        return 0;
-    }
-    
-    return 1;
-}
-
-var compare = function (choice1, choice2) {
-// RETURN 1 IF choice1 WINS
-// RETURN 0 IF choice1 == choice2
-// RETURN -1 IF choice2 WINS
-
-    if ( choice1 == choice2 )   return 0;
-
-    if ( choice1 == "rock" ) {
-        if (choice2 == "paper") {
-            return -1;
-        }
-        else {
-            return 1;
-        }
-    }
-    if ( choice1 == "scissors" ) {
-        if (choice2 == "paper") {
-            return 1;
-        }
-        else {
-            return -1;
-        }
-    }
-    if ( choice1 == "paper" ) {
-        if (choice2 == "rock") {
-            return 1;
-        }
-        else {
-            return -1;
-        }
-    }
-}
-
-
-// RUN TESTS
-var expected = [0, -1, 1, 1, 0, -1, -1, 1, 0];
-var results = [];
-for ( var i = 0; i < choices1.length; i++) {
-    var choice1 = choices1[i];
-    
-    for ( var j = 0; j < choices2.length; j++) {
-        var choice2 = choices2[j];
-        
-        //var win = winner(choice1, choice2);
-        //console.log("choice1: " + choice1 + ", choice2: " + choice2 + ", win: " + win)
-        var win = compare(choice1, choice2);
-        console.log("AFTER compare: choice1: " + choice1 + ", choice2: " + choice2 + ", win: " + win)
-        
-        results.push(win);
-    }
-}
-
-console.log("results: ");
-console.dir({results:results});
-console.log("expected: ");
-console.dir({expected:expected});
-
-
-</script>
-
-<style>
-    .monstergrid {
-        background-color: #AAA;
-        margin: 10px;
-        padding: 10px;
-    }
-
-    .monstergrid .row {
-        border: 2px solid red;
-        background-color: white;
-    }
-    
-    .monstergrid td {
-        width: 50px;
-        height: 50px;
-        font-size: 32px;
-        text-align: center;
-    }
-
-</style>
-
-
 <body>
 
 <h1>janken</h1>
 
-<table class="monstergrid">
-    <tr class="row">
-        <td>X</td>
-        <td>?</td>
-        <td>?</td>
-        <td>M</td>
-        <td>T</td>
-    </tr>   
+    <table
+        class="monstergrid"
+        id="table"
+    >
+        <tr class="row">
+            <td>X</td>
+            <td>?</td>
+            <td>?</td>
+            <td>M</td>
+            <td>T</td>
+        </tr>   
+    </table>
+
+<!--    <table class="monstergrid">
+        <tr class="row">
+            <td>X</td>
+            <td>?</td>
+            <td>?</td>
+            <td>M</td>
+            <td>T</td>
+        </tr>   
+    </table>
+-->
+
+<script type="text/javascript">
+
+console.log("BEFORE dojo.addOnLoad ");
+
+dojo.addOnLoad(function(){
+    console.log("INSIDE dojo.addOnLoad ");
+
+    require(["plugins/games/Janken"], function(Janken){
+        console.log("janken.html    INSIDE require");
+        var janken = new plugins.games.Janken({
+            height : 7
+            , width : 8
+        });
+        console.log("janken.html    janken:")
+        console.dir({janken:janken});
     
-</table>
+        janken.buildTable();
+    });
+    
+    console.log("AFTER new plugins.games.Janken");
+});
+console.log("AFTER dojo.addOnLoad ");
+
+</script>
+
+
+
 
 </body>
 </html>
