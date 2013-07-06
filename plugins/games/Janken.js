@@ -15,6 +15,7 @@ define([
     "dojo/_base/declare",
     "dijit/registry",
     "dojo/dom",
+    "dojo/keys",
     "dojo/_base/array",
     "dojo/on",
     "dojo/when",
@@ -27,7 +28,7 @@ define([
     "dojo/domReady!"
 ],
 
-function (declare, registry, dom, arrayUtil, on, when, lang, domAttr, domClass, domConstruct, JSON, ready) {
+function (declare, registry, dom, keys, arrayUtil, on, when, lang, domAttr, domClass, domConstruct, JSON, ready) {
 
 ////}}}}}
 
@@ -36,21 +37,21 @@ return declare("plugins.games.Janken", [], {
 // cssFiles : Array
 // CSS FILES
 cssFiles : [
-	//require.toUrl("dojo/resources/dojo.css"),
-	//require.toUrl("plugins/xy/css/xy.css"),
-	//require.toUrl("dojox/layout/resources/ExpandoPane.css"),
-	//require.toUrl("plugins/xy/images/elusive/css/elusive-webfont.css")
 	require.toUrl("plugins/games/css/janken.css")
 ],
 
 // VARIABLES
-max_width : 5,
-max_height : 5,
-character_alive : true,
-character_won : false,
-monster_awake : false,
-monster_awakened : false,
-monster_move_per_turn : 2,
+maxWidth : 5,
+maxHeight : 5,
+characterAlive : true,
+characterWon : false,
+monsterAwake : false,
+monsterAwakened : false,
+monsterMovePerTurn : 2,
+playerPosition: null,
+monsterPosition: null,
+trapPosition : null,
+flaskPosition : null,
 
 //////}}
 
@@ -69,8 +70,59 @@ constructor : function(args) {
     //    thisObject.buildTable();
     //});
 },
-buildTable : function () {
+startup : function () {
+    this.buildTable();
+    this.playGame();    
+},
+playGame : function () {
+    on(document.body, "keyup", function(event){
+        //console.log("Janken.startup    KEYUP event:");
+        //console.dir({event:event});
+        //console.log("Janken.playGame    KEYUP event.keyCode: " + event.keyCode);
+        
+        switch(event.keyCode){
+            case keys.RIGHT_ARROW:
+                console.log("Janken.playGame    RIGHT ARROW");
+                // handle right arrow
+                
+                
+                break;
 
+            case keys.LEFT_ARROW:
+                console.log("Janken.playGame    LEFT ARROW");
+                // handle left arrow
+
+
+                break;
+
+            case keys.UP_ARROW:
+                console.log("Janken.playGame    UP ARROW");
+                // handle left arrow
+
+
+                break;
+
+            case keys.DOWN_ARROW:
+                console.log("Janken.playGame    DOWN ARROW");
+                // handle left arrow
+
+
+                break;
+
+        }
+    });    
+
+    
+},
+refreshTable : function () {
+    console.log("Janken.refreshTable ");
+  
+    this.clearTable();
+
+    this.updateMonster();
+  
+},
+buildTable : function () {
     var thisObject = this;
     if ( ! thisObject.table ) {
         thisObject.table = dom.byId("table");
@@ -82,34 +134,117 @@ buildTable : function () {
 
     this.clearTable();
 
-    var rowData = [    
-        [" ", " ", "X", " "," "],
-        [" ", " ", " ", " "," "],   
-        [" ", " ", " ", "T"," "],    
-        [" ", " ", " ", " "," "],   
-        ["M", " ", " ", " ","F"]    
-    ];
+    this.initialiseRowData();
     
-    this.buildRows(rowData);
+    this.playerPosition = this.addPosition("X");
+    console.log("initialiseRowData    DOING this.addPosition(M)");
+    this.monsterPosition = this.addPosition("M");
+    console.log("initialiseRowData    DOING this.addPosition(T)");
+    this.trapPosition = this.addPosition("T");
+    console.log("initialiseRowData    DOING this.addPosition(F)");
+    this.flaskPosition = this.addPosition("F");
+
+    console.log("Janken.initialiseRowData     this.rowData: " + this.rowData);
+    console.dir({this_rowData:this.rowData});
+
+    this.buildRows(this.rowData);
+    
+    //var rowData = [
+    //    [" ", " ", "X", " "," "],
+    //    [" ", " ", " ", " "," "],   
+    //    [" ", " ", " ", "T"," "],    
+    //    [" ", " ", " ", " "," "],   
+    //    ["M", " ", " ", " ","F"]    
+    //];
+    //
+    //this.buildRows(rowData);
+},
+positionExists : function (position) {
+    console.log("Janken.positionExists    position: " + position.x + ", " + position.y);
+    
+    if (this.rowData[position.x - 1][position.y - 1] == " ") {
+        console.log("Janken.positionExists    RETURNING false");
+        return false;
+    }
+    else {
+        console.log("Janken.positionExists    RETURNING true");
+        return true;
+    }
+},
+addPosition : function (letter) {
+    var position = this.randomPosition();
+    while ( this.positionExists(position) ) {
+        position = this.randomPosition();
+    }
+    console.log("Janken.addPosition    position: " + position);
+    console.dir({position:position});
+        
+    this.rowData[position.x - 1][position.y - 1] = letter;
+    
+    return {
+        x: position.x,
+        y: position.y
+    };
+},
+initialiseRowData : function () {
+    //console.log("Janken.initialiseRowData     this.maxWidth: " + this.maxWidth);
+    //console.log("Janken.initialiseRowData     this.maxHeight: " + this.maxHeight);
+
+    // create array of blanks
+    this.rowData = [];
+    for ( var rowCounter = 0; rowCounter < this.maxHeight; rowCounter++) {
+        //console.log("Janken.initialiseRowData    rowCounter: " + rowCounter);
+        
+        var array = [];
+        for ( var columnCounter = 0; columnCounter < this.maxWidth; columnCounter++) {
+            //console.log("Janken.initialiseRowData    columnCounter: " + columnCounter);
+            array.push(" "); 
+        }
+    
+        this.rowData.push(array);
+    }
+    
+    //console.log("Janken.initialiseRowData     this.rowData: " + this.rowData);
+    //console.dir({this_rowData:this.rowData});   
+},
+randomPosition : function () {
+// type: X, T, F or M
+    var x = parseInt( (Math.random() * this.maxWidth) + 1 );
+    var y = parseInt( (Math.random() * this.maxHeight) + 1 );    
+    console.log("Janken.randomPosition    : " + x + ", " + y);
+    
+    return {
+        x : x,
+        y : y
+    };
 },
 buildRows : function (rowData) {
-    console.log("Janken.buildRows    Doing group rows, rowData.length: " + rowData.length);
+    //console.log("Janken.buildRows    Doing ghroup rows, rowData.length: " + rowData.length);
     this.tableRows = [];
 
     for ( var rowCounter = 0; rowCounter < rowData.length; rowCounter++) {
-        console.log("Janken.buildRows    rowData[" + rowCounter + "]: " + dojo.toJson(rowData[rowCounter], true));
+        //console.log("Janken.buildRows    rowData[" + rowCounter + "]: " + dojo.toJson(rowData[rowCounter], true));
     
         var elements = rowData[rowCounter];
         var tableRow = domConstruct.create("tr");
         domClass.add(tableRow, "row");
         this.table.appendChild(tableRow);
-        console.log("Janken.buildRows    tableRow:");
-        console.dir({tableRow:tableRow});
+        //console.log("Janken.buildRows    tableRow:");
+        //console.dir({tableRow:tableRow});
 
         for ( var j = 0; j < elements.length; j++ ) {
             var tableData = domConstruct.create('td');
-            if ( elements[j] == "F") {
+            if ( elements[j] == "X") {
+                domClass.add(tableData, "player");
+            }
+            else if ( elements[j] == "M") {
+                domClass.add(tableData, "monster");
+            }
+            else if ( elements[j] == "F") {
                 domClass.add(tableData, "flask");
+            }
+            else if ( elements[j] == "T") {
+                domClass.add(tableData, "trap");
             }
             else {
                 tableData.innerHTML = elements[j];
@@ -121,8 +256,7 @@ buildRows : function (rowData) {
         //this.table.appendChild(accessRow.row);
         //this.tableRows.push(accessRow);
     }
-    console.log("Janken.buildRows     Completed buildRows");
-
+    //console.log("Janken.buildRows     Completed buildRows");
 },
 clearTable : function () {
     console.log("Janken.clearTable     this.table: " + this.table);

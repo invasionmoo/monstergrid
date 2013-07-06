@@ -16,9 +16,27 @@
     text-align: center;
 }
 
-.monstergrid .row td.flask {
-    background-image: url("../../../plugins/games/images/flask-50x50.png");
+.monstergrid .row td.player,
+.monstergrid .row td.monster,
+.monstergrid .row td.flask,
+.monstergrid .row td.trap {
     background-repeat: no-repeat;
     width: 50px;
     height: 50px;
+}
+
+.monstergrid .row td.player {
+    background-image: url("../../../plugins/games/images/player-50x50.png");
+}
+
+.monstergrid .row td.monster {
+    background-image: url("../../../plugins/games/images/monster-50x50.png");
+}
+
+.monstergrid .row td.flask {
+    background-image: url("../../../plugins/games/images/flask-50x50.png");
+}
+
+.monstergrid .row td.trap {
+    background-image: url("../../../plugins/games/images/trap-50x50.png");
 }
