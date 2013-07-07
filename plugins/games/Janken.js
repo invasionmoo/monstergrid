@@ -52,7 +52,6 @@ playerPosition: null,
 monsterPosition: null,
 trapPosition : null,
 flaskPosition : null,
-
 //////}}
 
 constructor : function(args) {		
@@ -75,52 +74,148 @@ startup : function () {
     this.playGame();    
 },
 playGame : function () {
+
+    var thisObject = this;    
     on(document.body, "keyup", function(event){
         //console.log("Janken.startup    KEYUP event:");
         //console.dir({event:event});
-        //console.log("Janken.playGame    KEYUP event.keyCode: " + event.keyCode);
-        
+
         switch(event.keyCode){
             case keys.RIGHT_ARROW:
-                console.log("Janken.playGame    RIGHT ARROW");
+                //console.log("Janken.playGame    RIGHT ARROW");
                 // handle right arrow
                 
+                if ( thisObject.playerPosition.x == "5" ) {
+                    //console.log("Janken.playGame    this.playerPosition.x == 5. Returning");
+                    return;
+                }
+                else {
+                    thisObject.rowData[thisObject.playerPosition.y - 1][thisObject.playerPosition.x - 1] = " ";
+                    thisObject.playerPosition.x = thisObject.playerPosition.x + 1;
+                    thisObject.rowData[thisObject.playerPosition.y - 1][thisObject.playerPosition.x - 1] = "X";
+                    thisObject.refreshTable();
+                }
                 
                 break;
 
             case keys.LEFT_ARROW:
-                console.log("Janken.playGame    LEFT ARROW");
+                //console.log("Janken.playGame    LEFT ARROW");
                 // handle left arrow
 
+                if ( thisObject.playerPosition.x == "1" ) {
+                    //console.log("Janken.playGame    this.playerPosition.x == 1. Returning");
+                    return;
+                }
+                else {
+                    thisObject.rowData[thisObject.playerPosition.y - 1][thisObject.playerPosition.x - 1] = " ";
+                    thisObject.playerPosition.x = thisObject.playerPosition.x - 1;
+                    thisObject.rowData[thisObject.playerPosition.y - 1][thisObject.playerPosition.x - 1] = "X";
+                    thisObject.refreshTable();
+                }
 
                 break;
 
             case keys.UP_ARROW:
-                console.log("Janken.playGame    UP ARROW");
+                //console.log("Janken.playGame    UP ARROW");
                 // handle left arrow
 
+                if ( thisObject.playerPosition.y == "1" ) {
+                    //console.log("Janken.playGame    this.playerPosition.y == 1. Returning");
+                    return;
+                }
+                else {
+                    thisObject.rowData[thisObject.playerPosition.y - 1][thisObject.playerPosition.x - 1] = " ";
+                    thisObject.playerPosition.y = thisObject.playerPosition.y - 1;
+                    thisObject.rowData[thisObject.playerPosition.y - 1][thisObject.playerPosition.x - 1] = "X"
+                    thisObject.refreshTable();
+                }
 
                 break;
 
             case keys.DOWN_ARROW:
-                console.log("Janken.playGame    DOWN ARROW");
+                //console.log("Janken.playGame    DOWN ARROW");
                 // handle left arrow
 
-
+                if ( thisObject.playerPosition.y == "5" ) {
+                    //console.log("Janken.playGame    this.playerPosition.y == 5. Returning");
+                    return;
+                }
+                else {
+                    thisObject.rowData[thisObject.playerPosition.y - 1][thisObject.playerPosition.x - 1] = " ";
+                    thisObject.playerPosition.y = thisObject.playerPosition.y + 1;
+                    thisObject.rowData[thisObject.playerPosition.y - 1][thisObject.playerPosition.x - 1] = "X";
+                    thisObject.refreshTable();
+                }
                 break;
-
         }
     });    
-
-    
 },
 refreshTable : function () {
-    console.log("Janken.refreshTable ");
-  
+    console.log("Janken.refreshTable    DOING this.clearTable()");
     this.clearTable();
 
+    console.log("Janken.refreshTable    DOING this.updateMonster()");
     this.updateMonster();
-  
+
+    this.buildRows(this.rowData);
+},
+updateMonster : function () {
+    var randomMove = this.randomMove(this.monsterPosition);
+    console.log("Janken.updateMonster    randomMove.x: " + randomMove.x + ", y: " + randomMove.y);
+    
+},
+randomMove : function (position) {
+    console.log("Janken.randomMove    position.x: " + position.x + ", y: " + position.y);
+    var maxPositions = 8;
+
+    var choice = parseInt( (Math.random() * maxPositions) );
+    console.log("Janken.randomMove    choice: " + choice);
+    switch (choice) {
+        case 1:
+            position.y = position.y - 1;
+            break;
+        case 2:
+            position.y = position.y - 1;
+            position.x = position.x + 1;
+            break;
+        case 3:
+            position.x = position.x + 1;
+            break;
+        case 4:
+            position.y = position.y + 1;
+            position.x = position.x + 1;
+            break;
+        case 5:
+            position.y = position.y + 1;
+            break;
+        case 6:
+            position.y = position.y + 1;
+            position.x = position.x - 1;
+            break;
+        case 7:
+            position.x = position.x - 1;
+            break;
+        case 8:
+            position.y = position.y - 1;
+            position.x = position.x - 1;
+            break;
+    }
+
+    return position;
+},
+isInsideTable : function (position) {
+    console.log("Janken.isInsideTable    position.x: " + position.x + ", y: " + position.y);
+    if ( position.x > 0 && position.x < this.maxWidth + 1 ) {
+        if ( position.y > 0 && position.y < this.maxHeight + 1 ) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    else {
+        return false;
+    }
 },
 buildTable : function () {
     var thisObject = this;
@@ -162,7 +257,7 @@ buildTable : function () {
 positionExists : function (position) {
     console.log("Janken.positionExists    position: " + position.x + ", " + position.y);
     
-    if (this.rowData[position.x - 1][position.y - 1] == " ") {
+    if (this.rowData[position.y - 1][position.x - 1] == " ") {
         console.log("Janken.positionExists    RETURNING false");
         return false;
     }
@@ -179,7 +274,7 @@ addPosition : function (letter) {
     console.log("Janken.addPosition    position: " + position);
     console.dir({position:position});
         
-    this.rowData[position.x - 1][position.y - 1] = letter;
+    this.rowData[position.y - 1][position.x - 1] = letter;
     
     return {
         x: position.x,
@@ -259,8 +354,8 @@ buildRows : function (rowData) {
     //console.log("Janken.buildRows     Completed buildRows");
 },
 clearTable : function () {
-    console.log("Janken.clearTable     this.table: " + this.table);
-    console.dir({this_table:this.table});
+    //console.log("Janken.clearTable     this.table: " + this.table);
+    //console.dir({this_table:this.table});
 
     // CLEAN TABLE
     if ( this.table.childNodes ) {
@@ -345,7 +440,7 @@ loadCSSFile : function (cssFile) {
 });	//	end define
 
 
-console.log("Janken END");
+//console.log("Janken END");
 
 
 
