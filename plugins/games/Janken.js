@@ -192,9 +192,14 @@ updateMonster : function () {
 
     this.rowData[this.monsterPosition.y - 1][this.monsterPosition.x - 1] = " ";
 
-    this.monsterPosition  = this.randomMove(this.monsterPosition);
+    //this.monsterPosition  = this.randomMove(this.monsterPosition);
+    //while ( ! this.isInsideTable(this.monsterPosition) ) {
+    //    this.monsterPosition = this.randomMove(this.monsterPosition);
+    //}
+
+    this.monsterPosition  = this.directionMove(this.playerPosition, this.monsterPosition);
     while ( ! this.isInsideTable(this.monsterPosition) ) {
-        this.monsterPosition = this.randomMove(this.monsterPosition);
+        this.monsterPosition = this.directionMove(this.playerPosition, this.monsterPosition);
     }
     
     this.rowData[this.monsterPosition.y - 1][this.monsterPosition.x - 1] = "M"
@@ -205,7 +210,7 @@ randomMove : function (position) {
     console.log("Janken.randomMove    position.x: " + position.x + ", y: " + position.y);
     var maxPositions = 8;
 
-    var choice = parseInt( (Math.random() * maxPositions) );
+    var choice = parseInt( (Math.random() * maxPositions) + 1);
     console.log("Janken.randomMove    choice: " + choice);
     switch (choice) {
         case 1:
@@ -239,6 +244,96 @@ randomMove : function (position) {
     }
 
     return position;
+},
+directionMove : function (playerPosition, monsterPosition) {
+    console.log("Janken.directionMove    playerPosition.x: " + playerPosition.x + ", y: " + playerPosition.y);
+    console.log("Janken.directionMove    monsterPosition.x: " + monsterPosition.x + ", y: " + monsterPosition.y);
+
+    var relativePosition = this.subtractPosition(monsterPosition, playerPosition);
+    console.log("Janken.directionMove    NEW relativePosition.x: " + relativePosition.x + ", y: " + relativePosition.y);
+    
+    /*
+    
+              QUADRANTS
+
+                  |
+              1   |  2
+            ______|______
+                  |
+              3   |  4
+                  |
+    
+    */
+    
+    if ( relativePosition.x <= 0 && relativePosition.y <= 0) {
+    //if ( relativePosition.x <= 0 && relativePosition.y >= 0) {
+        // QUADRANT 1
+        if ( relativePosition.x != 0 ) {
+            this.moveRight(monsterPosition);
+        }
+        else {
+            this.moveDown(monsterPosition)
+        }
+    }    
+    else if ( relativePosition.x >= 0 && relativePosition.y <= 0) {
+    //else if ( relativePosition.x >= 0 && relativePosition.y >= 0) {
+        // QUADRANT 2
+        if ( relativePosition.x != 0 ) {
+            this.moveLeft(monsterPosition);
+        }
+        else {
+            this.moveDown(monsterPosition)
+        }
+    }
+    else if ( relativePosition.x <= 0 && relativePosition.y >= 0) {
+    //else if ( relativePosition.x <= 0 && relativePosition.y <= 0) {
+        // QUADRANT 3
+        if ( relativePosition.x != 0 ) {
+            this.moveRight(monsterPosition);
+        }
+        else {
+            this.moveUp(monsterPosition)
+        }        
+    }
+    else {
+        // QUADRANT 4
+        if ( relativePosition.x != 0 ) {
+            this.moveLeft(monsterPosition);
+        }
+        else {
+            this.moveUp(monsterPosition)
+        }
+    }
+     
+    return monsterPosition;
+},
+moveLeft : function (position) {
+    position.x = position.x - 1;
+    
+    return position;
+},
+moveRight : function (position) {
+    position.x = position.x + 1;
+    
+    return position;
+},
+moveUp : function (position) {
+    position.y = position.y - 1;
+    
+    return position;
+},
+moveDown : function (position) {
+    position.y = position.y + 1;
+    
+    return position;
+},
+
+subtractPosition : function (firstPosition, secondPosition) {
+    var relativePosition    =   {};
+    relativePosition.x = firstPosition.x - secondPosition.x;
+    relativePosition.y = firstPosition.y - secondPosition.y;
+
+    return relativePosition;    
 },
 isInsideTable : function (position) {
     console.log("Janken.isInsideTable    position.x: " + position.x + ", y: " + position.y);
