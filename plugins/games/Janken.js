@@ -75,16 +75,10 @@ startup : function () {
 },
 playGame : function () {
 
-    var thisObject = this;    
+    var thisObject = this;
     on(document.body, "keyup", function(event){
-        //console.log("Janken.startup    KEYUP event:");
-        //console.dir({event:event});
-
-        switch(event.keyCode){
+       switch(event.keyCode){
             case keys.RIGHT_ARROW:
-                //console.log("Janken.playGame    RIGHT ARROW");
-                // handle right arrow
-                
                 if ( thisObject.playerPosition.x == "5" ) {
                     //console.log("Janken.playGame    this.playerPosition.x == 5. Returning");
                     return;
@@ -94,14 +88,10 @@ playGame : function () {
                     thisObject.playerPosition.x = thisObject.playerPosition.x + 1;
                     thisObject.rowData[thisObject.playerPosition.y - 1][thisObject.playerPosition.x - 1] = "X";
                     thisObject.refreshTable();
-                }
-                
+                }                
                 break;
 
             case keys.LEFT_ARROW:
-                //console.log("Janken.playGame    LEFT ARROW");
-                // handle left arrow
-
                 if ( thisObject.playerPosition.x == "1" ) {
                     //console.log("Janken.playGame    this.playerPosition.x == 1. Returning");
                     return;
@@ -112,13 +102,9 @@ playGame : function () {
                     thisObject.rowData[thisObject.playerPosition.y - 1][thisObject.playerPosition.x - 1] = "X";
                     thisObject.refreshTable();
                 }
-
                 break;
 
             case keys.UP_ARROW:
-                //console.log("Janken.playGame    UP ARROW");
-                // handle left arrow
-
                 if ( thisObject.playerPosition.y == "1" ) {
                     //console.log("Janken.playGame    this.playerPosition.y == 1. Returning");
                     return;
@@ -129,13 +115,9 @@ playGame : function () {
                     thisObject.rowData[thisObject.playerPosition.y - 1][thisObject.playerPosition.x - 1] = "X"
                     thisObject.refreshTable();
                 }
-
                 break;
 
             case keys.DOWN_ARROW:
-                //console.log("Janken.playGame    DOWN ARROW");
-                // handle left arrow
-
                 if ( thisObject.playerPosition.y == "5" ) {
                     //console.log("Janken.playGame    this.playerPosition.y == 5. Returning");
                     return;
@@ -152,17 +134,72 @@ playGame : function () {
 },
 refreshTable : function () {
     console.log("Janken.refreshTable    DOING this.clearTable()");
-    this.clearTable();
 
     console.log("Janken.refreshTable    DOING this.updateMonster()");
-    this.updateMonster();
 
-    this.buildRows(this.rowData);
+    var playerWon = this.checkWon();
+    var playerLost = this.checkLost();
+    if ( playerWon ) {
+        this.clearTable();
+        this.buildRows(this.rowData);
+        this.displayWon();
+    }
+    else if ( playerLost ) {
+        this.clearTable();
+        this.buildRows(this.rowData);
+        this.displayLost();
+    }
+    else {
+        this.updateMonster();
+        this.clearTable();
+        this.buildRows(this.rowData);
+    }    
+},
+checkWon : function () {
+    if ( this.playerPosition.x == this.flaskPosition.x
+        && this.playerPosition.y == this.flaskPosition.y ) {
+        var audio = new Audio("plugins/games/sound/won.wav");
+        audio.play();
+        return true;
+    }
+    else {
+        return false;
+    }
+},
+checkLost : function () {
+    console.log("Janken.checkLost    playerPosition: " + this.playerPosition.x + ", " + this.playerPosition.y);
+    console.log("Janken.checkLost    monsterPosition: " + this.monsterPosition.x + ", " + this.monsterPosition.y);
+    if ( this.playerPosition.x == this.monsterPosition.x
+        && this.playerPosition.y == this.monsterPosition.y ) {
+        var audio = new Audio("plugins/games/sound/lost.wav");
+        audio.play();
+        console.log("Janken.checkLost    Returning true");
+        
+        return true;
+    }
+    else {
+        console.log("Janken.checkLost    Returning false");
+        return false;
+    }
+},
+displayLost: function () {
+    console.log("Janken.displayLost");  
+},
+displayWon: function () {
+    console.log("Janken.displayWon");  
 },
 updateMonster : function () {
-    var randomMove = this.randomMove(this.monsterPosition);
-    console.log("Janken.updateMonster    randomMove.x: " + randomMove.x + ", y: " + randomMove.y);
+
+    this.rowData[this.monsterPosition.y - 1][this.monsterPosition.x - 1] = " ";
+
+    this.monsterPosition  = this.randomMove(this.monsterPosition);
+    while ( ! this.isInsideTable(this.monsterPosition) ) {
+        this.monsterPosition = this.randomMove(this.monsterPosition);
+    }
     
+    this.rowData[this.monsterPosition.y - 1][this.monsterPosition.x - 1] = "M"
+
+    console.log("Janken.updateMonster    RETURNING this.monsterPosition.x: " + this.monsterPosition.x + ", y: " + this.monsterPosition.y);    
 },
 randomMove : function (position) {
     console.log("Janken.randomMove    position.x: " + position.x + ", y: " + position.y);
@@ -207,13 +244,16 @@ isInsideTable : function (position) {
     console.log("Janken.isInsideTable    position.x: " + position.x + ", y: " + position.y);
     if ( position.x > 0 && position.x < this.maxWidth + 1 ) {
         if ( position.y > 0 && position.y < this.maxHeight + 1 ) {
+            console.log("Janken.isInsideTable    Returning true");
             return true;
         }
         else {
+            console.log("Janken.isInsideTable    Returning false");
             return false;
         }
     }
     else {
+        console.log("Janken.isInsideTable    Returning false");
         return false;
     }
 },
