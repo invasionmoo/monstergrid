@@ -1,8 +1,11 @@
 <html>
 
 <head>
-<title>janken</title>
+<title>monstergrid</title>
 </head>
+
+
+<script src="phonegap.js"></script>
 
 <body>
 
@@ -66,19 +69,19 @@ console.log("BEFORE dojo.addOnLoad ");
 dojo.addOnLoad(function(){
     console.log("INSIDE dojo.addOnLoad ");
 
-    require(["plugins/games/Janken"], function(Janken){
-        console.log("janken.html    INSIDE require");
-        var janken = new plugins.games.Janken({
+    require(["plugins/games/MonsterGrid"], function(MonsterGrid){
+        console.log("monstergrid.html    INSIDE require");
+        var monstergrid = new plugins.games.MonsterGrid({
             height : 7
             , width : 8
         });
-        console.log("janken.html    janken:")
-        console.dir({janken:janken});
+        console.log("monstergrid.html    monstergrid:")
+        console.dir({monstergrid:monstergrid});
     
-        janken.startup();
+        monstergrid.startup();
     });
     
-    console.log("AFTER new plugins.games.Janken");
+    console.log("AFTER new plugins.games.MonsterGrid");
 });
 console.log("AFTER dojo.addOnLoad ");
 

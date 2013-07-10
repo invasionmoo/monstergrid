@@ -1,4 +1,4 @@
-// Janken.js
+// MonsterGrid.js
 /* summary:
 
     Allow the user to play the monster game
@@ -32,12 +32,12 @@ function (declare, registry, dom, keys, arrayUtil, on, when, lang, domAttr, domC
 
 ////}}}}}
 
-return declare("plugins.games.Janken", [], {
+return declare("plugins.games.MonsterGrid", [], {
 
 // cssFiles : Array
 // CSS FILES
 cssFiles : [
-	require.toUrl("plugins/games/css/janken.css")
+	require.toUrl("plugins/games/css/monstergrid.css")
 ],
 
 // VARIABLES
@@ -55,7 +55,7 @@ flaskPosition : null,
 //////}}
 
 constructor : function(args) {		
-    console.log("Janken.constructor    args:");
+    console.log("MonsterGrid.constructor    args:");
     console.dir({args:args});
 
     // MIXIN ARGS
@@ -80,7 +80,7 @@ playGame : function () {
        switch(event.keyCode){
             case keys.RIGHT_ARROW:
                 if ( thisObject.playerPosition.x == "5" ) {
-                    //console.log("Janken.playGame    this.playerPosition.x == 5. Returning");
+                    //console.log("MonsterGrid.playGame    this.playerPosition.x == 5. Returning");
                     return;
                 }
                 else {
@@ -93,7 +93,7 @@ playGame : function () {
 
             case keys.LEFT_ARROW:
                 if ( thisObject.playerPosition.x == "1" ) {
-                    //console.log("Janken.playGame    this.playerPosition.x == 1. Returning");
+                    //console.log("MonsterGrid.playGame    this.playerPosition.x == 1. Returning");
                     return;
                 }
                 else {
@@ -106,7 +106,7 @@ playGame : function () {
 
             case keys.UP_ARROW:
                 if ( thisObject.playerPosition.y == "1" ) {
-                    //console.log("Janken.playGame    this.playerPosition.y == 1. Returning");
+                    //console.log("MonsterGrid.playGame    this.playerPosition.y == 1. Returning");
                     return;
                 }
                 else {
@@ -119,7 +119,7 @@ playGame : function () {
 
             case keys.DOWN_ARROW:
                 if ( thisObject.playerPosition.y == "5" ) {
-                    //console.log("Janken.playGame    this.playerPosition.y == 5. Returning");
+                    //console.log("MonsterGrid.playGame    this.playerPosition.y == 5. Returning");
                     return;
                 }
                 else {
@@ -133,9 +133,9 @@ playGame : function () {
     });    
 },
 refreshTable : function () {
-    console.log("Janken.refreshTable    DOING this.clearTable()");
+    console.log("MonsterGrid.refreshTable    DOING this.clearTable()");
 
-    console.log("Janken.refreshTable    DOING this.updateMonster()");
+    console.log("MonsterGrid.refreshTable    DOING this.updateMonster()");
 
     var playerWon = this.checkWon();
     var playerLost = this.checkLost();
@@ -167,26 +167,26 @@ checkWon : function () {
     }
 },
 checkLost : function () {
-    console.log("Janken.checkLost    playerPosition: " + this.playerPosition.x + ", " + this.playerPosition.y);
-    console.log("Janken.checkLost    monsterPosition: " + this.monsterPosition.x + ", " + this.monsterPosition.y);
+    console.log("MonsterGrid.checkLost    playerPosition: " + this.playerPosition.x + ", " + this.playerPosition.y);
+    console.log("MonsterGrid.checkLost    monsterPosition: " + this.monsterPosition.x + ", " + this.monsterPosition.y);
     if ( this.playerPosition.x == this.monsterPosition.x
         && this.playerPosition.y == this.monsterPosition.y ) {
         var audio = new Audio("plugins/games/sound/lost.wav");
         audio.play();
-        console.log("Janken.checkLost    Returning true");
+        console.log("MonsterGrid.checkLost    Returning true");
         
         return true;
     }
     else {
-        console.log("Janken.checkLost    Returning false");
+        console.log("MonsterGrid.checkLost    Returning false");
         return false;
     }
 },
 displayLost: function () {
-    console.log("Janken.displayLost");  
+    console.log("MonsterGrid.displayLost");  
 },
 displayWon: function () {
-    console.log("Janken.displayWon");  
+    console.log("MonsterGrid.displayWon");  
 },
 updateMonster : function () {
 
@@ -204,14 +204,14 @@ updateMonster : function () {
     
     this.rowData[this.monsterPosition.y - 1][this.monsterPosition.x - 1] = "M"
 
-    console.log("Janken.updateMonster    RETURNING this.monsterPosition.x: " + this.monsterPosition.x + ", y: " + this.monsterPosition.y);    
+    console.log("MonsterGrid.updateMonster    RETURNING this.monsterPosition.x: " + this.monsterPosition.x + ", y: " + this.monsterPosition.y);    
 },
 randomMove : function (position) {
-    console.log("Janken.randomMove    position.x: " + position.x + ", y: " + position.y);
+    console.log("MonsterGrid.randomMove    position.x: " + position.x + ", y: " + position.y);
     var maxPositions = 8;
 
     var choice = parseInt( (Math.random() * maxPositions) + 1);
-    console.log("Janken.randomMove    choice: " + choice);
+    console.log("MonsterGrid.randomMove    choice: " + choice);
     switch (choice) {
         case 1:
             position.y = position.y - 1;
@@ -246,11 +246,11 @@ randomMove : function (position) {
     return position;
 },
 directionMove : function (playerPosition, monsterPosition) {
-    console.log("Janken.directionMove    playerPosition.x: " + playerPosition.x + ", y: " + playerPosition.y);
-    console.log("Janken.directionMove    monsterPosition.x: " + monsterPosition.x + ", y: " + monsterPosition.y);
+    console.log("MonsterGrid.directionMove    playerPosition.x: " + playerPosition.x + ", y: " + playerPosition.y);
+    console.log("MonsterGrid.directionMove    monsterPosition.x: " + monsterPosition.x + ", y: " + monsterPosition.y);
 
     var relativePosition = this.subtractPosition(monsterPosition, playerPosition);
-    console.log("Janken.directionMove    NEW relativePosition.x: " + relativePosition.x + ", y: " + relativePosition.y);
+    console.log("MonsterGrid.directionMove    NEW relativePosition.x: " + relativePosition.x + ", y: " + relativePosition.y);
     
     /*
     
@@ -336,19 +336,19 @@ subtractPosition : function (firstPosition, secondPosition) {
     return relativePosition;    
 },
 isInsideTable : function (position) {
-    console.log("Janken.isInsideTable    position.x: " + position.x + ", y: " + position.y);
+    console.log("MonsterGrid.isInsideTable    position.x: " + position.x + ", y: " + position.y);
     if ( position.x > 0 && position.x < this.maxWidth + 1 ) {
         if ( position.y > 0 && position.y < this.maxHeight + 1 ) {
-            console.log("Janken.isInsideTable    Returning true");
+            console.log("MonsterGrid.isInsideTable    Returning true");
             return true;
         }
         else {
-            console.log("Janken.isInsideTable    Returning false");
+            console.log("MonsterGrid.isInsideTable    Returning false");
             return false;
         }
     }
     else {
-        console.log("Janken.isInsideTable    Returning false");
+        console.log("MonsterGrid.isInsideTable    Returning false");
         return false;
     }
 },
@@ -356,10 +356,10 @@ buildTable : function () {
     var thisObject = this;
     if ( ! thisObject.table ) {
         thisObject.table = dom.byId("table");
-        console.log("Janken.buildTable    AFTER dom.byId(),    this.table xxx:")
+        console.log("MonsterGrid.buildTable    AFTER dom.byId(),    this.table xxx:")
         console.dir({this_table:thisObject.table});
     }
-    console.log("Janken.buildTable     this.table: " + this.table);
+    console.log("MonsterGrid.buildTable     this.table: " + this.table);
     console.dir({this_table:this.table});
 
     this.clearTable();
@@ -374,7 +374,7 @@ buildTable : function () {
     console.log("initialiseRowData    DOING this.addPosition(F)");
     this.flaskPosition = this.addPosition("F");
 
-    console.log("Janken.initialiseRowData     this.rowData: " + this.rowData);
+    console.log("MonsterGrid.initialiseRowData     this.rowData: " + this.rowData);
     console.dir({this_rowData:this.rowData});
 
     this.buildRows(this.rowData);
@@ -390,14 +390,14 @@ buildTable : function () {
     //this.buildRows(rowData);
 },
 positionExists : function (position) {
-    console.log("Janken.positionExists    position: " + position.x + ", " + position.y);
+    console.log("MonsterGrid.positionExists    position: " + position.x + ", " + position.y);
     
     if (this.rowData[position.y - 1][position.x - 1] == " ") {
-        console.log("Janken.positionExists    RETURNING false");
+        console.log("MonsterGrid.positionExists    RETURNING false");
         return false;
     }
     else {
-        console.log("Janken.positionExists    RETURNING true");
+        console.log("MonsterGrid.positionExists    RETURNING true");
         return true;
     }
 },
@@ -406,7 +406,7 @@ addPosition : function (letter) {
     while ( this.positionExists(position) ) {
         position = this.randomPosition();
     }
-    console.log("Janken.addPosition    position: " + position);
+    console.log("MonsterGrid.addPosition    position: " + position);
     console.dir({position:position});
         
     this.rowData[position.y - 1][position.x - 1] = letter;
@@ -417,31 +417,31 @@ addPosition : function (letter) {
     };
 },
 initialiseRowData : function () {
-    //console.log("Janken.initialiseRowData     this.maxWidth: " + this.maxWidth);
-    //console.log("Janken.initialiseRowData     this.maxHeight: " + this.maxHeight);
+    //console.log("MonsterGrid.initialiseRowData     this.maxWidth: " + this.maxWidth);
+    //console.log("MonsterGrid.initialiseRowData     this.maxHeight: " + this.maxHeight);
 
     // create array of blanks
     this.rowData = [];
     for ( var rowCounter = 0; rowCounter < this.maxHeight; rowCounter++) {
-        //console.log("Janken.initialiseRowData    rowCounter: " + rowCounter);
+        //console.log("MonsterGrid.initialiseRowData    rowCounter: " + rowCounter);
         
         var array = [];
         for ( var columnCounter = 0; columnCounter < this.maxWidth; columnCounter++) {
-            //console.log("Janken.initialiseRowData    columnCounter: " + columnCounter);
+            //console.log("MonsterGrid.initialiseRowData    columnCounter: " + columnCounter);
             array.push(" "); 
         }
     
         this.rowData.push(array);
     }
     
-    //console.log("Janken.initialiseRowData     this.rowData: " + this.rowData);
+    //console.log("MonsterGrid.initialiseRowData     this.rowData: " + this.rowData);
     //console.dir({this_rowData:this.rowData});   
 },
 randomPosition : function () {
 // type: X, T, F or M
     var x = parseInt( (Math.random() * this.maxWidth) + 1 );
     var y = parseInt( (Math.random() * this.maxHeight) + 1 );    
-    console.log("Janken.randomPosition    : " + x + ", " + y);
+    console.log("MonsterGrid.randomPosition    : " + x + ", " + y);
     
     return {
         x : x,
@@ -449,17 +449,17 @@ randomPosition : function () {
     };
 },
 buildRows : function (rowData) {
-    //console.log("Janken.buildRows    Doing ghroup rows, rowData.length: " + rowData.length);
+    //console.log("MonsterGrid.buildRows    Doing ghroup rows, rowData.length: " + rowData.length);
     this.tableRows = [];
 
     for ( var rowCounter = 0; rowCounter < rowData.length; rowCounter++) {
-        //console.log("Janken.buildRows    rowData[" + rowCounter + "]: " + dojo.toJson(rowData[rowCounter], true));
+        //console.log("MonsterGrid.buildRows    rowData[" + rowCounter + "]: " + dojo.toJson(rowData[rowCounter], true));
     
         var elements = rowData[rowCounter];
         var tableRow = domConstruct.create("tr");
         domClass.add(tableRow, "row");
         this.table.appendChild(tableRow);
-        //console.log("Janken.buildRows    tableRow:");
+        //console.log("MonsterGrid.buildRows    tableRow:");
         //console.dir({tableRow:tableRow});
 
         for ( var j = 0; j < elements.length; j++ ) {
@@ -486,10 +486,10 @@ buildRows : function (rowData) {
         //this.table.appendChild(accessRow.row);
         //this.tableRows.push(accessRow);
     }
-    //console.log("Janken.buildRows     Completed buildRows");
+    //console.log("MonsterGrid.buildRows     Completed buildRows");
 },
 clearTable : function () {
-    //console.log("Janken.clearTable     this.table: " + this.table);
+    //console.log("MonsterGrid.clearTable     this.table: " + this.table);
     //console.dir({this_table:this.table});
 
     // CLEAN TABLE
@@ -534,28 +534,28 @@ compare : function (choice1, choice2) {
     return null;
 },
 loadCSS : function (cssFiles) {
-	console.log("    Janken.loadCSS");
+	console.log("    MonsterGrid.loadCSS");
 	if ( cssFiles == null )
 		cssFiles = this.cssFiles;
-	//console.log("    Janken.loadCSS     cssFiles: " +  dojo.toJson(cssFiles, true));
+	//console.log("    MonsterGrid.loadCSS     cssFiles: " +  dojo.toJson(cssFiles, true));
 
 	// LOAD CSS
 	for ( var i in cssFiles ) {
-		//console.log("    Janken.loadCSS     Loading CSS file: " + this.cssFiles[i]);
+		//console.log("    MonsterGrid.loadCSS     Loading CSS file: " + this.cssFiles[i]);
 		this.loadCSSFile(cssFiles[i]);
 	}
 },
 loadCSSFile : function (cssFile) {
-	//console.log("    Janken.loadCSSFile    cssFile: " + cssFile);
-	//console.log("    Janken.loadCSSFile    this.loadedCssFiles: " + dojo.toJson(this.loadedCssFiles));
+	//console.log("    MonsterGrid.loadCSSFile    cssFile: " + cssFile);
+	//console.log("    MonsterGrid.loadCSSFile    this.loadedCssFiles: " + dojo.toJson(this.loadedCssFiles));
 
 	if ( this.loadedCssFiles == null || ! this.loadedCssFiles ) {
-		//console.log("    Janken.loadCSSFile    Creating this.loadedCssFiles = new Object");
+		//console.log("    MonsterGrid.loadCSSFile    Creating this.loadedCssFiles = new Object");
 		this.loadedCssFiles = new Object;
 	}
 
 	if ( ! this.loadedCssFiles[cssFile] ) {
-		//console.log("    Janken.loadCSSFile    Loading cssFile: " + cssFile);
+		//console.log("    MonsterGrid.loadCSSFile    Loading cssFile: " + cssFile);
 		var cssNode = document.createElement('link');
 		cssNode.type = 'text/css';
 		cssNode.rel = 'stylesheet';
@@ -565,7 +565,7 @@ loadCSSFile : function (cssFile) {
 		this.loadedCssFiles[cssFile] = 1;
 	}
 
-	//console.log("    Janken.loadCSSFile    Returning this.loadedCssFiles: " + dojo.toJson(this.loadedCssFiles));
+	//console.log("    MonsterGrid.loadCSSFile    Returning this.loadedCssFiles: " + dojo.toJson(this.loadedCssFiles));
 
 	return this.loadedCssFiles;
 }
@@ -575,11 +575,11 @@ loadCSSFile : function (cssFile) {
 });	//	end define
 
 
-//console.log("Janken END");
+//console.log("MonsterGrid END");
 
 
 
-//console.log("janken");
+//console.log("monstergrid");
 //
 //var choices1 = ["rock", "paper", "scissors"];
 //var choices2 = ["rock", "paper", "scissors"];
